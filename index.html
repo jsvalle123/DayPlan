@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+      integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <title>Work Day Scheduler</title>
+  </head>
+
+  <body>
+    <header class="jumbotron">
+      <h1 class="display-3">Work Day Scheduler</h1>
+      <p class="lead">A simple calendar app for scheduling your work day</p>
+      <p id="currentDay" class="lead">Today is </p>
+    </header>
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+    <!-- const now = new Date(); -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+     <script>
+    $(document).ready(function () {
+        console.log("start!");
+        init();
+    });
+function init() {
+    var planner = $(".container");
+
+    var hours = new Array();
+
+    for (let i = 0; i < 9; i++) {
+        hours.push(700)+(i *100);
+    }
+
+    hours.forEach(element => {
+        var gridDiv = $("<div>");
+        var hourDiv = $("<div>");
+        var Input = $("<textarea>");
+        var save = $("<span>");
+        var currentDay = $("#currentDay");
+        hourDiv.attr("class", "input-group hourDiv");
+        gridDiv.attr("class", "input-group-prepend parentDiv");
+        Input.attr("class", "input-group-text textArea");
+
+        hourDiv.text(element);
+
+        gridDiv.append(hourDiv);
+        gridDiv.append(Input);
+
+        var Appt = getAppt(Appt, element);
+        
+        var apptHour = findAppt(Appt, element);
+        if (!apptHour){
+            console.log(Appt);
+        } else {
+            Input.val(apptHour.title);
+        }
+
+        save.attr("class", "input-group-append btn-primary save");
+
+        save.text("Submit");
+
+        currentDay.text(new Date().toDateString());
+
+        save.click( function () {
+            saveButton(this);
+        });
+
+        gridDiv.append(save);
+        planner.append(gridDiv);
+
+        var day = new Date();
+        var hour = day.getHours();
+        
+    });
+
+    function findAppt(Appt, hours){
+        return Appt.find(p => p.hour == hour);
+
+    }
+
+    function getAppt() {
+        var date = new Date().toDateString();
+        var appts = JSON.parse(localStorage.getItem("appts" + date));
+        if (!appts) {
+            appts = new Array();
+        }
+        return appts;
+    }
+
+    function saveAppt(Appt) {
+         var date = new Date().toDateString();
+         localStorage.setItem("Appt" + date, JSON.stringify(Appt));
+
+    }
+
+    function saveButton(eventSource) {
+        var title = $(eventSource).parent().children("textarea").val();
+
+        var now = $(eventSource).parent().children(".hourDiv").val();
+
+        var apptStored = getAppt();
+        var apptSaved = findAppt(apptSaved, now);
+
+        var newPlan = {
+            hour: now,
+            title: title
+        }
+
+        for (let i = 0; i < apptStored.length; i++) {
+            if (apptStored[i].hour === now) {
+                apptStored[i] = newPlan;
+                saveAppt(apptStored);
+                break;
+            }
+        }
+    }
+}
+     </script>
+  </body>
+</html>
